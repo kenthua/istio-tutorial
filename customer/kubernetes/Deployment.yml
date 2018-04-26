@@ -21,14 +21,14 @@ spec:
       - env:
         - name: JAVA_OPTIONS
           value: -Xms128m -Xmx256m -Djava.net.preferIPv4Stack=true -Djava.security.egd=file:///dev/./urandom
-        image: example/customer:latest
+        image: gcr.io/kenthua-testing/customer:latest
         imagePullPolicy: IfNotPresent
         livenessProbe:
           exec:
             command:
             - curl
             - localhost:8080/health
-          initialDelaySeconds: 10
+          initialDelaySeconds: 20
           periodSeconds: 5
           timeoutSeconds: 1
         name: customer

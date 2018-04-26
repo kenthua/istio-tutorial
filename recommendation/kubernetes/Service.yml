@@ -3,8 +3,9 @@ kind: Service
 metadata:
   name: recommendation
   labels:
-    app: recommendation    
+    app: recommendation
 spec:
+  type: LoadBalancer
   ports:
   - name: http
     port: 8080

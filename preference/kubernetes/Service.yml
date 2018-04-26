@@ -3,8 +3,9 @@ kind: Service
 metadata:
   name: preference
   labels:
-    app: preference    
+    app: preference
 spec:
+  type: LoadBalancer
   ports:
   - name: http
     port: 8080
