@@ -122,6 +122,29 @@ kubectl apply -f Service.yml -n tutorial
 gcloud container builds submit --config cloudbuild-v2.yaml .
 
 kubectl apply -f Deployment-v2.yml -n tutorial
+
+cd ../../
+
+# Create an ingress for customer
+cat <<EOF | kubectl create -f -
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: customer-ingress
+  namespace: tutorial
+  annotations:
+    kubernetes.io/ingress.class: istio
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /
+        backend:
+          serviceName: customer
+          servicePort: 8080
+EOF
+
+bin/poll_streamlined_customer.sh
 ----
 
 == Updating Redeploying Code
