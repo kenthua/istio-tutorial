@@ -3,6 +3,7 @@ const util = require('util');
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const os = require('os');
 
 const responseStringFormat = "recommendation => %s\n";
 
