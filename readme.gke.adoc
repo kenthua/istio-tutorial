@@ -14,58 +14,6 @@ There are two more simple apps that illustrate how Istio handles egress routes: 
 
 *Table of Contents*
 
-* link:#prerequisite-cli-tools[Prerequisite CLI tools]
-* link:#setup-minishift[Setup minishift]
-* link:#setup-environment[Setup environment]
-* link:#istio-installation-script[Istio installation script]
-* link:#deploy-customer[Deploy customer]
-* link:#deploy-preference[Deploy preference]
-* link:#deploy-recommendation[Deploy recommendation]
-* link:#updating-redeploying-code[Updating Redeploying Code]
-* link:#monitoring[Monitoring]
-* link:#custom-metrics[Custom Metrics]
-* link:#tracing[Tracing]
-* link:#istio-routerule-changes[Istio RouteRule Changes]
-* link:#recommendationv2[recommendation:v2]
-* link:#changing-istio-routerules[Changing Istio RouteRules]
-** link:#all-users-to-recommendationv2[All users to recommendation:v2]
-** link:#all-users-to-recommendationv1[All users to recommendation:v1]
-** link:#all-users-to-recommendation-v1-and-v2[All users to recommendation v1 and v2]
-** link:#split-traffic-between-v1-and-v2[Split traffic between v1 and v2]
-* link:#fault-injection[Fault Injection]
-* link:#http-error-503[HTTP Error 503]
-* link:#delay[Delay]
-* link:#retry[Retry]
-* link:#timeout[Timeout]
-* link:#smart-routing-based-on-user-agent-header-canary-deployment[Smart routing based on user-agent header (Canary Deployment)]
-** link:#set-recommendation-to-all-v1[Set recommendation to all v1]
-** link:#set-safari-users-to-v2[Set Safari users to v2]
-** link:#set-mobile-users-to-v2[Set mobile users to v2]
-** link:#clean-up[Clean up]
-* link:#mirroring-traffic-dark-launch[Mirroring Traffic (Dark Launch)]
-** link:#clean-up[Clean up]
-* link:#access-control[Access Control]
-** link:#whitelist[Whitelist]
-** link:#blacklist[Blacklist]
-* link:#load-balancer[Load Balancer]
-* link:#rate-limiting[Rate Limiting]
-* link:#circuit-breaker[Circuit Breaker]
-* link:#fail-fast-with-max-connections-and-max-pending-requests[Fail Fast with Max Connections and Max Pending Requests]
-** link:#load-test-without-circuit-breaker[Load test without circuit breaker]
-** link:#load-test-with-circuit-breaker[Load test with circuit breaker]
-** link:#clean-up[Clean up]
-* link:#pool-ejection[Pool Ejection]
-** link:#scale-number-of-instances-of-v2-deployment[Scale number of instances of `v2` deployment]
-** link:#test-behavior-without-failing-instances[Test behavior without failing instances]
-** link:#test-behavior-with-failing-instance-and-without-pool-ejection[Test behavior with failing instance and without pool ejection]
-** link:#test-behavior-with-failing-instance-and-with-pool-ejection[Test behavior with failing instance and with pool ejection]
-* link:#ultimate-resilience-with-retries-circuit-breaker-and-pool-ejection[Ultimate resilience with retries, circuit breaker, and pool ejection]
-** link:#clean-up[Clean up]
-* link:#egress[Egress]
-** link:#create-httpbin-java-app[Create HTTPBin Java App]
-** link:#create-the-github-java-app[Create the Github Java App]
-** link:#istio-ize-egress[Istio-ize Egress]
-* link:#tips-tricks[Tips &amp; Tricks]
 
 == Prerequisite CLI tools
 
@@ -76,6 +24,9 @@ You will need in this tutorial:
 ** Fedora: `sudo curl --output /usr/local/bin/stern -L https://github.com/wercker/stern/releases/download/1.6.0/stern_linux_amd64 && sudo chmod +x /usr/local/bin/stern`
 
 == Google Kubernetes Engine 
+
+[source,bash]
+----
 gcloud container clusters create <cluster-name> \
     --zone <zone>
     --project <project-name>
@@ -87,6 +38,8 @@ gcloud container clusters get-credentials <cluster-name> \
 kubectl create clusterrolebinding cluster-admin-binding \
     --clusterrole=cluster-admin \
     --user=$(gcloud config get-value core/account)
+
+----
 
 == Istio installation script
 
