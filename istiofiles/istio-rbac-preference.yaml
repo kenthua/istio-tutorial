@@ -1,0 +1,21 @@
+apiVersion: "config.istio.io/v1alpha2"
+kind: ServiceRole
+metadata:
+  name: preference-viewer
+  namespace: tutorial
+spec:
+  rules:
+  - services: ["preference.tutorial.svc.cluster.local"]
+    methods: ["GET"]
+---
+apiVersion: "config.istio.io/v1alpha2"
+kind: ServiceRoleBinding
+metadata:
+  name: bind-preference-viewer
+  namespace: tutorial
+spec:
+  subjects:
+  - user: "cluster.local/ns/tutorial/sa/customer"
+  roleRef:
+    kind: ServiceRole
+    name: "preference-viewer"

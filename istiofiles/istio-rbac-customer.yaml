@@ -1,0 +1,21 @@
+apiVersion: "config.istio.io/v1alpha2"
+kind: ServiceRole
+metadata:
+  name: customer-viewer
+  namespace: tutorial
+spec:
+  rules:
+  - services: ["customer.tutorial.svc.cluster.local"]
+    methods: ["GET"]
+---
+apiVersion: "config.istio.io/v1alpha2"
+kind: ServiceRoleBinding
+metadata:
+  name: bind-customer-viewer
+  namespace: tutorial
+spec:
+  subjects:
+  - user: "*"
+  roleRef:
+    kind: ServiceRole
+    name: "customer-viewer"

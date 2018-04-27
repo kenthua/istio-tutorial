@@ -170,6 +170,41 @@ bin/poll_streamlined_customer.sh
 istioctl delete -f istiofiles/mixer-rule-deny-serviceaccount.yaml -n tutorial
 ----
 
+== Role-Based Access Control
+----
+# Default is deny all once applied
+istioctl create -f istiofiles/istio-rbac-enable.yaml
+
+bin/poll_streamlined_customer.sh
+
+# namespace-level
+istioctl create -f istiofiles/istio-rbac-namespace.yaml
+
+bin/poll_streamlined_customer.sh
+
+istioctl delete -f istiofiles/istio-rbac-namespace.yaml
+
+# service-level 
+
+istioctl create -f istiofiles/istio-rbac-customer.yaml
+
+istioctl create -f istiofiles/istio-rbac-preference.yaml
+
+istioctl create -f istiofiles/istio-rbac-recommendation.yaml
+
+bin/poll_streamlined_customer.sh
+
+istioctl delete -f istiofiles/istio-rbac-customer.yaml
+
+istioctl delete -f istiofiles/istio-rbac-preference.yaml
+
+istioctl delete -f istiofiles/istio-rbac-recommendation.yaml
+
+istioctl delete -f istiofiles/istio-rbac-enable.yaml
+
+----
+Note: There may be delays due to caching in istio proxy
+
 == Updating Redeploying Code
 
 When you wish to change code (e.g. editing the .java files) and wish to "redeploy", simply:
