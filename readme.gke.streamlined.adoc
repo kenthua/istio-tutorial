@@ -166,6 +166,8 @@ kubectl set serviceaccount deployment recommendation-v2 recommendation -n tutori
 istioctl create -f istiofiles/mixer-rule-deny-serviceaccount.yaml -n tutorial
 
 bin/poll_streamlined_customer.sh
+
+istioctl delete -f istiofiles/mixer-rule-deny-serviceaccount.yaml -n tutorial
 ----
 
 == Updating Redeploying Code
