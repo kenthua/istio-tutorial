@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #URL="customer-tutorial.$(minishift ip).nip.io"
-URL=`kubectl get ing -n tutorial | grep customer | awk '{print $3}'`
+URL=`kubectl get ing customer-ingress -n tutorial -o=jsonpath='{.status.loadBalancer.ingress[].ip}'`
 
 while true
 do curl $URL

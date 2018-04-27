@@ -123,7 +123,7 @@ Then test the customer endpoint
 
 [source,bash]
 ----
-URL=`kubectl get svc -n tutorial | grep customer | awk '{print $4}'`
+URL=`kubectl get svc customer -n tutorial -o=jsonpath='{.status.loadBalancer.ingress[].ip}'`
 curl $URL:8080
 ----
 
@@ -175,7 +175,7 @@ Wait until the status is `Running` and there are `2/2` pods in the `Ready` colum
 
 [source,bash]
 ----
-URL=`kubectl get svc -n tutorial | grep preference | awk '{print $4}'`
+URL=`kubectl get svc preference -n tutorial -o=jsonpath='{.status.loadBalancer.ingress[].ip}'`
 curl $URL:8080
 ----
 
@@ -232,7 +232,7 @@ Wait until the status is `Running` and there are `2/2` pods in the `Ready` colum
 
 [source,bash]
 ----
-URL=`kubectl get svc -n tutorial | grep recommendation | awk '{print $4}'`
+URL=`kubectl get svc recommendation -n tutorial -o=jsonpath='{.status.loadBalancer.ingress[].ip}'`
 curl $URL:8080
 ----
 
