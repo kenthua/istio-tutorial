@@ -22,13 +22,17 @@ You will need in this tutorial:
 
 [source,bash]
 ----
-gcloud container clusters create <cluster-name> \
-    --zone <zone>
-    --project <project-name>
+export PROJECT_NAME=<project-name>
+export CLUSTER_NAME=<cluster-name>
+export ZONE=<zone>
 
-gcloud container clusters get-credentials <cluster-name> \
-    --zone <zone> \
-    --project <project-name>
+gcloud container clusters create $CLUSTER_NAME \
+    --zone $ZONE
+    --project $PROJECT_NAME
+
+gcloud container clusters get-credentials $CLUSTER_NAME \
+    --zone $ZONE \
+    --project $PROJECT_NAME
 
 kubectl create clusterrolebinding cluster-admin-binding \
     --clusterrole=cluster-admin \

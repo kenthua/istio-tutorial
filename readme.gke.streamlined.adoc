@@ -1,4 +1,4 @@
-= Java (Spring Boot and Vert.x) + Istio on Kubernetes/GKE
+= nodejs + Istio on Kubernetes/GKE
 
 There are three different and super simple microservices in this system and they are chained together in the following sequence:
 
