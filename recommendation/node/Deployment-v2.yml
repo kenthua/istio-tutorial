@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - env:
-        image: example/recommendation:v2
+        image: gcr.io/kenthua-testing/node/recommendation:v2
         imagePullPolicy: IfNotPresent
         livenessProbe:
           exec:

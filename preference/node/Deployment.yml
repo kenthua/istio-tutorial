@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - env:
-        image: example/preference:latest
+        image: gcr.io/kenthua-testing/node/preference:latest
         imagePullPolicy: IfNotPresent
         livenessProbe:
           exec:
