@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: customer
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: preference
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: recommendation

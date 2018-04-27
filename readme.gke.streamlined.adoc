@@ -152,6 +152,22 @@ EOF
 bin/poll_streamlined_customer.sh
 ----
 
+== Secure Access Control
+
+This will deny customer service from calling the preference service
+[source,bash]
+----
+kubectl apply -f k8sfiles/sa.yaml -n tutorial
+kubectl set serviceaccount deployment customer customer -n tutorial
+kubectl set serviceaccount deployment preference preference -n tutorial
+kubectl set serviceaccount deployment recommendation-v1 recommendation -n tutorial
+kubectl set serviceaccount deployment recommendation-v2 recommendation -n tutorial
+
+istioctl create -f istiofiles/mixer-rule-deny-serviceaccount.yaml -n tutorial
+
+bin/poll_streamlined_customer.sh
+----
+
 == Updating Redeploying Code
 
 When you wish to change code (e.g. editing the .java files) and wish to "redeploy", simply:
