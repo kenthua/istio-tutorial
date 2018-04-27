@@ -599,9 +599,12 @@ stern recommendation -n tutorial
 ----
 
 or
-`bash
+
+[source,bash]
+----
+bash
 ./kubetail.sh recommendation -n tutorial
-`
+----
 
 Clean up
 
@@ -1274,7 +1277,7 @@ curl localhost:8080/misbehave
 exit
 ----
 
-This is a special endpoint that will make our application return only `503`s.
+This is a special endpoint that will make our application return only `503` s.
 
 Throw some requests at the customer endpoint:
 
@@ -1381,7 +1384,7 @@ Even with pool ejection your application doesn't _look_ that resilient. That's p
 - *Pool Ejection* to remove failing instances from the pool of responding instances;
 - *Retries* to forward the request to another instance just in case we get an open circuit breaker and/or pool ejection;
 
-By simply adding a *retry* configuration to our current `routerule`, we'll be able to get rid completely of our `503`s requests. This means that whenever we receive a failed request from an ejected instance, Istio will forward the request to another supposably healthy instance.
+By simply adding a *retry* configuration to our current `routerule`, we'll be able to get rid completely of our `503` s requests. This means that whenever we receive a failed request from an ejected instance, Istio will forward the request to another supposably healthy instance.
 
 [source,bash]
 ----

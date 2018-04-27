@@ -16,13 +16,17 @@ There are two more simple apps that illustrate how Istio handles egress routes: 
 
 [source,bash]
 ----
-gcloud container clusters create <cluster-name> \
-    --zone <zone>
-    --project <project-name>
+export PROJECT_NAME=<project-name>
+export CLUSTER_NAME=<cluster-name>
+export ZONE=<zone>
 
-gcloud container clusters get-credentials <cluster-name> \
-    --zone <zone> \
-    --project <project-name>
+gcloud container clusters create $CLUSTER_NAME \
+    --zone $ZONE
+    --project $PROJECT_NAME
+
+gcloud container clusters get-credentials $CLUSTER_NAME \
+    --zone $ZONE \
+    --project $PROJECT_NAME
 
 kubectl create clusterrolebinding cluster-admin-binding \
     --clusterrole=cluster-admin \
@@ -66,7 +70,7 @@ kubectl get namespace -L istio-injection
 
 [source,bash]
 ----
-# Install addons
+# Install istio addons
 kubectl apply -n istio-system -f https://raw.githubusercontent.com/jaegertracing/jaeger-kubernetes/master/all-in-one/jaeger-all-in-one-template.yml
 kubectl apply -f install/kubernetes/addons/prometheus.yaml
 kubectl apply -f install/kubernetes/addons/grafana.yaml
@@ -83,6 +87,7 @@ kubectl create namespace tutorial
 # Apply label for auto injection in tutorial namespace
 kubectl label namespace tutorial istio-injection=enabled
 
+# Start tutorial deployment
 git clone https://github.com/kenthua/istio-tutorial
 
 cd istio-tutorial
@@ -225,7 +230,7 @@ Then run several requests through the system
 
 [source,bash]
 ----
-bin/poll_customer.sh
+bin/poll_streamlined_customer.sh
 ----
 
 NOTE: You may have to refresh the browser for the Prometheus graph to update. And you may wish to make the interval 5m (5 minutes) as seen in the screenshot above.
@@ -294,14 +299,14 @@ and test the customer endpoint
 
 [source,bash]
 ----
-bin/poll_customer.sh
+bin/poll_streamlined_customer.sh
 ----
 
 you likely see "customer =&gt; preference =&gt; recommendation v1 from '99634814-d2z2t': 3", where '99634814-d2z2t' is the pod running v1 and the 3 is basically the number of times you hit the endpoint.
 
 [source]
 ----
-bin/poll_customer.sh
+bin/poll_streamlined_customer.sh
 ----
 
 you likely see "customer =&gt; preference =&gt; recommendation v2 from '2819441432-5v22s': 1" as by default you get round-robin load-balancing when there is more than one Pod behind a Service
@@ -310,7 +315,7 @@ Send several requests to see their responses
 
 [source,bash]
 ----
-bin/poll_customer.sh
+bin/poll_streamlined_customer.sh
 ----
 
 The default Kubernetes/OpenShift behavior is to round-robin load-balance across all available pods behind a single Service. Add another replica of recommendation-v2 Deployment.
@@ -410,7 +415,7 @@ and send in several requests
 
 [source,bash]
 ----
-bin/poll_customer.sh
+bin/poll_streamlined_customer.sh
 ----
 
 In another terminal, change the mixture to be 75/25
@@ -477,7 +482,7 @@ And hit the customer endpoint
 
 [source,bash]
 ----
-bin/poll_customer.sh
+bin/poll_streamlined_customer.sh
 ----
 
 You will notice many requets to the customer endpoint now have a delay.
@@ -489,9 +494,12 @@ stern recommendation -n tutorial
 ----
 
 or
-`bash
+
+[source,bash]
+----
+bash
 ./kubetail.sh recommendation -n tutorial
-`
+----
 
 Clean up
 
@@ -515,7 +523,7 @@ Now, if you hit the customer endpoint several times, you should see some 503's
 
 [source,bash]
 ----
-bin/poll_customer.sh
+bin/poll_streamlined_customer.sh
 
 customer => preference => recommendation v2 from '2036617847-m9glz': 190
 customer => preference => recommendation v2 from '2036617847-m9glz': 191
@@ -540,7 +548,7 @@ and after a few seconds, things will settle down and you will see it work every 
 
 [source,bash]
 ----
-bin/poll_customer.sh
+bin/poll_streamlined_customer.sh
 
 customer => preference => recommendation v2 from '2036617847-m9glz': 196
 customer => preference => recommendation v2 from '2036617847-m9glz': 197
@@ -560,7 +568,7 @@ Now, delete the retry rule and see the old behavior, some random 503s
 ----
 istioctl delete routerule recommendation-v2-retry -n tutorial
 
-bin/poll_customer.sh
+bin/poll_streamlined_customer.sh
 
 customer => preference => recommendation v2 from '2036617847-m9glz': 190
 customer => preference => recommendation v2 from '2036617847-m9glz': 191
@@ -580,7 +588,7 @@ Now, delete the 503 rule and back to random load-balancing between v1 and v2
 ----
 istioctl delete routerule recommendation-v2-503 -n tutorial
 
-bin/poll_customer.sh
+bin/poll_streamlined_customer.sh
 
 customer => preference => recommendation v1 from '2039379827-h58vw': 129
 customer => preference => recommendation v2 from '2036617847-m9glz': 207
@@ -1164,7 +1172,7 @@ curl localhost:8080/misbehave
 exit
 ----
 
-This is a special endpoint that will make our application return only `503`s.
+This is a special endpoint that will make our application return only `503` s.
 
 Throw some requests at the customer endpoint:
 
@@ -1271,7 +1279,7 @@ Even with pool ejection your application doesn't _look_ that resilient. That's p
 - *Pool Ejection* to remove failing instances from the pool of responding instances;
 - *Retries* to forward the request to another instance just in case we get an open circuit breaker and/or pool ejection;
 
-By simply adding a *retry* configuration to our current `routerule`, we'll be able to get rid completely of our `503`s requests. This means that whenever we receive a failed request from an ejected instance, Istio will forward the request to another supposably healthy instance.
+By simply adding a *retry* configuration to our current `routerule` , we'll be able to get rid completely of our `503` s requests. This means that whenever we receive a failed request from an ejected instance, Istio will forward the request to another supposably healthy instance.
 
 [source,bash]
 ----
