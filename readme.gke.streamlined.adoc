@@ -170,6 +170,8 @@ bin/poll_streamlined_customer.sh
 istioctl delete -f istiofiles/mixer-rule-deny-serviceaccount.yaml -n tutorial
 ----
 
+NOTE: There may be delays due to caching in istio proxy
+
 == Role-Based Access Control
 ----
 # Default is deny all once applied
@@ -203,7 +205,6 @@ istioctl delete -f istiofiles/istio-rbac-recommendation.yaml
 istioctl delete -f istiofiles/istio-rbac-enable.yaml
 
 ----
-Note: There may be delays due to caching in istio proxy
 
 == Updating Redeploying Code
 
@@ -1084,6 +1085,37 @@ Second, you need to insure you have a `routerule` in place. Let's use a 50/50 sp
 ----
 istioctl create -f istiofiles/route-rule-recommendation-v1_and_v2_50_50.yml -n tutorial
 ----
+
+==== Test Circuit Breaker v1alpha3 - kenthua
+This example is performed with a DestinationRule.  Previous istio examples used a RouteRule and a DestinationPolicy
+ 
+[source,bash]
+----
+# Deploy a version of the node code that has timeout
+# In TUTORIAL_HOME/recommendation/node
+cp recommendation.timeout.js recommendation.js
+
+# gcloud rebuild / deploy recommendation v2
+
+# Deploy istio DestinationRule
+istioctl create -f istiofiles/recommendation_cb_policy_alpha_3.yml -n tutorial
+
+# cd to ISTIO_HOME
+#
+# Use fortio pod from istio example
+kubectl apply -f samples/httpbin/sample-client/fortio-deploy.yaml
+
+FORTIO_POD=$(kubectl get pod -n tutorial | grep fortio | awk '{ print $1 }')
+
+# Run a single test
+kubectl exec -it $FORTIO_POD -n tutorial -c fortio /usr/local/bin/fortio -- load -curl  http://recommendation:8080
+
+# Add concurrency
+kubectl exec -it $FORTIO_POD -n tutorial -c fortio /usr/local/bin/fortio -- load -c 2 -qps 0 -n 20 -loglevel Warning http://recommendation:8080
+
+# Increase concurrency count from 2 to higher
+----
+
 
 ==== Load test without circuit breaker
 
